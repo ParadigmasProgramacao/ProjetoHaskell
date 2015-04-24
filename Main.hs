@@ -2,6 +2,7 @@ module Main where
 
 import Calculation.Financial
 import Text.Printf
+import Util.Input
 
 options = ["1 - Calcular SAC", "2 - Calcular Price", "3 - Sair"]
 
@@ -10,10 +11,10 @@ showMenu (h:t) = do
 	putStrLn h
 	(showMenu t)
 
-tuplaToString (a,b,c,d) = (printf "%.2f" a)
-	++"  "++(printf "%.2f"  b)
-	++"  "++(printf "%.2f"  c)
-	++"  "++(printf "%.2f"  d)
+tuplaToString (a,b,c,d) = "PMT | "++(printf "%.2f" a)
+	++" | Amor. | "++(printf "%.2f"  b)
+	++" | Juros | "++(printf "%.2f"  c)
+	++" | PV | "++(printf "%.2f"  d)++" |"
 
 showTable [] _ _ _ = putStrLn "\n"
 showTable (h:t) (x:s) (l:g)  (n:m)= do
@@ -22,36 +23,33 @@ showTable (h:t) (x:s) (l:g)  (n:m)= do
 
 
 showOption 1 = do
-	putStrLn "Insira o numero de prestacoes:"
-	n <- getLine
-	putStrLn $ "Insira o valor da taxa (0 - 1):"
-	i <-getLine 
-	putStrLn $ "Insira o montante:"
-	value <- getLine
-	putStrLn "PMT     Amor.     Juros     PV"
-	let pmt = (sacPMT (read n::Int) (read i::Float) (read value::Float))
-	let amor = [sacAmor (read n::Int) (read value::Float) | _ <- pmt]
+	let n = getInt "Insira o numero de prestacoes:"  
+	let i = getFloat "Insira o valor da taxa (0 - 1):" 
+	let value = getFloat "Insira o montante:"
+	
+	putStrLn $ (show n)++"\n"++ (show i)++"\n"++ (show value)++"\n"
+
+	let pmt = (sacPMT n i value)
+	let amor = [sacAmor n value | _ <- pmt]
+	
 	showTable 
 		pmt
 		amor
-		(sacInterest (read n::Int) (read i::Float) (read value::Float))
-		(sacPV (read n::Int) (read i::Float) (read value::Float))
+		(sacInterest n i value)
+		(sacPV n i value)
 	
 showOption 2 = do
-	putStrLn "Insira o numero de prestacoes:"
-	n <- getLine
-	putStrLn $ "Insira o valor da taxa (0 - 1):"
-	i <-getLine 
-	putStrLn $ "Insira o montante:"
-	value <- getLine
-	putStrLn "PMT     Amor.     Juros     PV"
-	let amor = (priceAmor (read n::Int) (read i::Float) (read value::Float))
-	let pmt = pricePMT (read n::Int) (read i::Float) (read value::Float)
+	let n = getInt "Insira o numero de prestacoes:"  
+	let i = getFloat "Insira o valor da taxa (0 - 1):" 
+	let value = getFloat "Insira o montante:" 
+
+	putStrLn $ (show n)++"\n"++ (show i)++"\n"++ (show value)++"\n"
+
 	showTable
-		[pmt | _ <- amor]
-		amor
-		(priceInterest (read n::Int) (read i::Float) (read value::Float))
-		(pricePV (read n::Int) (read i::Float) (read value::Float))	
+		[pricePMT n i value | _ <- priceAmor n i value]
+		(priceAmor n i value)
+		(priceInterest n i value)
+		(pricePV n i value)
 
 showOption _ = putStrLn "Opcao invalida"
 
