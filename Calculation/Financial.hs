@@ -1,5 +1,5 @@
-module Financial (
-interest, simpleInterest, compoundInterest,
+module Calculation.Financial
+( interest, simpleInterest, compoundInterest,
 sacAmor, sacPMT, sacPV, sacInterest,
 priceAmor, pricePMT, priceInterest, pricePV
 ) where
