@@ -6,7 +6,7 @@ import Util.Input
 
 options = ["1 - Calcular SAC", "2 - Calcular Price", "3 - Sair"]
 
-showMenu [] = putStrLn "\n"
+showMenu [] = putStr ""
 showMenu (h:t) = do
 	putStrLn h
 	(showMenu t)
@@ -51,13 +51,16 @@ showOption 2 = do
 		(priceInterest n i value)
 		(pricePV n i value)
 
+
 showOption _ = putStrLn "Opcao invalida"
 
 main = do
 	showMenu options
 	inpOption <- getLine
-	if ((read inpOption :: Int) == 3)
-		then putStrLn "bye-bye"
-		else do
-			showOption (read inpOption :: Int)
-			main
+	let intOption = (read inpOption :: Int)
+	case intOption of
+		3 	->  putStrLn "Finalizando..."
+		_	-> 	do
+					showOption intOption
+					main
+
