@@ -30,7 +30,13 @@ calculate variables i n pv fv = do
 									calculate newVar i n pv fv
 							else do
 									case value of
+										"help"	-> do
+													putStrLn "Calculadora polonesa inversa v0.1"
+													putStrLn "funcoes implementadas:"
+													putStrLn "clear, sum, minus, mult, div, i, n, pv, fv"
+													calculate variables i n pv fv
 										"clear"	-> do
+													putStrLn "limpando os dados registrados ..."
 													calculate [] 0 0 0 0
 
 										"sum" 	-> do
