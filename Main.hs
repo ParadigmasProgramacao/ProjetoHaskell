@@ -1,10 +1,11 @@
 module Main where
 
 import Calculation.Financial
+import Calculation.Statistics
 import Text.Printf
 import Util.Input
 
-options = ["1 - Calcular SAC", "2 - Calcular Price", "3 - Sair"]
+options = ["1 - Calcular SAC", "2 - Calcular Price", "3 - Calcular Media", "4 - Calcular variância", "5 - Calcular Desvio Padrao", "6 - Sair"]
 
 showMenu [] = putStr ""
 showMenu (h:t) = do
@@ -20,7 +21,6 @@ showTable [] _ _ _ = putStrLn "\n"
 showTable (h:t) (x:s) (l:g)  (n:m)= do
 	putStrLn (tuplaToString (h,x,l, n))
 	showTable t s g m
-
 
 showOption 1 = do
 	let n = getInt "Insira o numero de prestacoes:"  
@@ -51,16 +51,49 @@ showOption 2 = do
 		(priceInterest n i value)
 		(pricePV n i value)
 
+showOption 3 = do
+	let n = getFloat "Numero de amostragem:"
+	putStrLn $ (show n)
+	putStrLn "Lista de amostragens:"
+	samplesList <- getLine
+	let list = map read $ words samplesList :: [Float]
+	let sumOfTheList = (sumList list)
+	let averageValue = (average n sumOfTheList)
+
+	putStrLn "Media: "
+	putStrLn $ (show averageValue)
+
+showOption 4 = do
+	let n = getFloat "Numero de amostragem:"
+	putStrLn $ (show n)
+	putStrLn "Lista de amostragens:"
+	samplesList <- getLine
+	let list = map read $ words samplesList :: [Float]
+	let averageValue = (variance list n)
+
+	putStrLn "Variancia da amostragem: "
+	putStrLn $ (show averageValue)
+
+showOption 5 = do
+	let n = getFloat "Numero de amostragem:"
+	putStrLn $ (show n)
+	putStrLn "Lista de amostragens:"
+	samplesList <- getLine
+	let list = map read $ words samplesList :: [Float]
+	let standardDev = (stdDeviation list n)
+
+	putStrLn "Desvio Padrao: "
+	putStrLn $ (show standardDev)
 
 showOption _ = putStrLn "Opcao invalida"
 
 main = do
 	showMenu options
 	inpOption <- getLine
+
 	let intOption = (read inpOption :: Int)
 	case intOption of
-		3 	->  putStrLn "Finalizando..."
+		6 	->  putStrLn "Finalizando..."
 		_	-> 	do
 					showOption intOption
 					main
-
